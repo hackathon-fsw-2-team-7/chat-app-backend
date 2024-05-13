@@ -14,6 +14,8 @@ module.exports = (sequelize, DataTypes) => {
             // define association here
             User.hasMany(models.Message, {
                 foreignKey: 'createdBy',
+                onUpdate: 'CASCADE',
+                onDelete: 'CASCADE',
             });
         }
     }
