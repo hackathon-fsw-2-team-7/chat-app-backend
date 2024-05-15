@@ -45,19 +45,17 @@ app.use(`${baseEndpoint}/messages`, messageRoutes);
 app.use((err, _, res, __) => errorResponseHandler(err, res));
 
 io.on("connection", (socket) => {
-    socket.on("connect", () => {
-        console.log(`client ${socket.id} is connected`);
-    });
+    console.log("a new user is connected");
 
     socket.on("typing", () => {
         console.log(`client ${socket.id} is typing`);
-        io.emit("typing");
+        io.emit("ontyping");
     });
 
-    socket.on("disconnect", () => {
-        console.log(`client ${socket.id} is disconnected`);
-        io.emit("disconnect");
-    });
+    // socket.on("disconnect", () => {
+    //     console.log(`client ${socket.id} is disconnected`);
+    //     io.emit("disconnect");
+    // });
 });
 
 httpServer.listen(port, () => {

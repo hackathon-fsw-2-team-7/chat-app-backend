@@ -14,7 +14,7 @@ exports.addMessage = async (req, res, next) => {
     try {
         const payload = req?.body;
         const data = await messageUsecase.addMessage(payload);
-        req.io.emit("addMessage", data);
+        req.io.emit("message", data);
 
         return res.status(201).json({
             data,
