@@ -3,8 +3,20 @@ require("dotenv").config();
 const express = require("express");
 const fileUpload = require("express-fileupload");
 const app = express();
-const port = process.env.PORT;
 const cors = require("cors");
+const port = process.env.PORT || 3000;
+
+const { createServer } = require("http");
+const { Server } = require("socket.io");
+
+const httpServer = createServer(app);
+const options = {
+    cors: {
+        origin: "*",
+        methods: "*",
+    },
+};
+const io = new Server(httpServer, options);
 
 app.use(cors());
 app.use(express.json()); // enable body in json format
@@ -24,10 +36,27 @@ const errorResponseHandler = require("./middlewares/errorResponseHandler.js");
 
 const baseEndpoint = "/api";
 const messageRoutes = require("./routes/message/index.js");
+const registerUser = require("./routes/register/index.js");
 
 app.use(`${baseEndpoint}/messages`, messageRoutes);
+app.use(`${baseEndpoint}/register`, registerUser);
 app.use((err, _, res, __) => errorResponseHandler(err, res));
 
-app.listen(port, () => {
-    console.log(`Server is listening on port ${port}`);
+
+io.on("connection", (socket) => {
+    console.log(socket.id + " connected!");
+
+    /* ... */
+    socket.on("disconnect", (reason) => {
+        console.log(socket.id + " disconnected because " + reason);
+    });
+
+    socket.on("typing", () => {
+        console.log("aku ditrigger");
+        io.emit("ontyping");
+    });
+});
+
+httpServer.listen(process.env.PORT, () => {
+    console.log(`Server is listening on port ${process.env.PORT}`);
 });
