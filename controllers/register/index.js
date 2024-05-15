@@ -3,13 +3,19 @@ const { registerUser } = require("../../usecases/register");
 exports.register = async (req, res, next) => {
     try {
 
-        const { username, password, name } = req.body;
+        const { username, email, password, name } = req.body;
 
         const photo = req?.files?.photo;
 
         if (username == "" || !username) {
             return next({
                 message: "username must be filled!",
+                statusCode: 400,
+            });
+        }
+        if (email == "" || !email) {
+            return next({
+                message: "email must be filled!",
                 statusCode: 400,
             });
         }
@@ -28,6 +34,7 @@ exports.register = async (req, res, next) => {
 
         const data = await registerUser({
             username,
+            email,
             password,
             name,
             photo,
