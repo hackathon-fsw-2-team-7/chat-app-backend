@@ -3,6 +3,7 @@ const { User } = require("../../models");
 const { uploader } = require("../../helpers/cloudinary");
 const crypto = require("crypto");
 const path = require("path");
+const axios = require("axios");
 const { v4: uuidv4 } = require('uuid');
 
 exports.createUser = async (payload) => {
@@ -21,4 +22,12 @@ exports.createUser = async (payload) => {
     const data = await User.create({id:uuidv4(),...payload});
 
     return data;
+};
+
+
+exports.getGoogleAccessTokenData = async (accessToken) => {
+  const response = await axios.get(
+    `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${accessToken}`
+  );
+  return response.data;
 };

@@ -37,11 +37,12 @@ const errorResponseHandler = require("./middlewares/errorResponseHandler.js");
 const baseEndpoint = "/api";
 const messageRoutes = require("./routes/message/index.js");
 const registerUser = require("./routes/register/index.js");
+const authRoutes = require("./routes/auth/auth.js");
 
 app.use(`${baseEndpoint}/messages`, messageRoutes);
 app.use(`${baseEndpoint}/register`, registerUser);
+app.use(`${baseEndpoint}/auth`, authRoutes);
 app.use((err, _, res, __) => errorResponseHandler(err, res));
-
 
 io.on("connection", (socket) => {
     console.log(socket.id + " connected!");
