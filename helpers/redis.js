@@ -1,50 +1,35 @@
-const {createClient} = require("redis");
+const redis = require("../config/redis");
 
-const redisClient = async () => {
-    const client = createClient({
-        password: process.env.REDIS_PASSWORD,
-        socket: {
-            host: process.env.REDIS_HOST,
-            port: process.env.REDIS_PORT,
-        },
-    });
-    await client.connect();
-    return client;
+exports.getData = async (key) => {
+  const redisClient = await redis();
+  try {
+    let dataString = await redisClient.get(key);
+    if (dataString) {
+      data = JSON.parse(dataString); // need to be parsed because data in redis is string, so we will convert from string to js object/array
+      return data;
+    }
+  } finally {
+    await redisClient.disconnect();
+  }
 };
 
-async function getData(key) {
-    const client = await redisClient();
-
-    if (!client.isReady) {
-        throw new Error("Failed connecting to Redis!");
-    }
-    const rawData = await client.get(key);
-    const data = JSON.parse(rawData);
-    await client.disconnect();
-
-    return data;
-}
-
-async function setData(key, newData) {
-    const client = await redisClient();
-
-    if (!client.isReady) {
-        throw new Error("Failed connecting to Redis!");
-    }
-    await client.set(key, JSON.stringify(newData), {
-        EX: 180,
+exports.setData = async (key, value, expiration) => {
+  const redisClient = await redis();
+  try {
+    const payload = JSON.stringify(value);
+    await redisClient.set(key, payload, {
+      EX: expiration,
     });
-    await client.disconnect();
-}
+  } finally {
+    await redisClient.disconnect();
+  }
+};
 
-async function deleteData(key) {
-    const client = await redisClient();
-
-    if (!client.isReady) {
-        throw new Error("Failed connecting to Redis!");
-    }
-    await client.del(key);
-    await client.disconnect();
-}
-
-module.exports = {getData, setData, deleteData};
+exports.deleteData = async (key) => {
+  const redisClient = await redis();
+  try {
+    await redisClient.del(key);
+  } finally {
+    await redisClient.disconnect();
+  }
+};
