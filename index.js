@@ -2,8 +2,10 @@ require("dotenv").config();
 
 const express = require("express");
 const fileUpload = require("express-fileupload");
-const app = express();
+const router = require("./routes");
 const cors = require("cors");
+
+const app = express();
 const port = process.env.PORT || 3000;
 
 const { createServer } = require("http");
@@ -41,7 +43,7 @@ const authRoutes = require("./routes/auth/auth.js");
 
 app.use(`${baseEndpoint}/messages`, messageRoutes);
 app.use(`${baseEndpoint}/register`, registerUser);
-app.use(`${baseEndpoint}/auth`, authRoutes);
+
 app.use((err, _, res, __) => errorResponseHandler(err, res));
 
 io.on("connection", (socket) => {
@@ -61,3 +63,37 @@ io.on("connection", (socket) => {
 httpServer.listen(process.env.PORT, () => {
     console.log(`Server is listening on port ${process.env.PORT}`);
 });
+
+// Static files
+app.use(express.static("public"));
+
+// Main API route
+app.use("/api", router);
+
+// 404 Error handler
+app.use("*", (req, res) => {
+    res.status(404).json({
+        data: null,
+        message: "Route not found",
+    });
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+    let statusCode = 500;
+    let message = "Internal Server Error";
+
+    if (err.statusCode) {
+        statusCode = err.statusCode;
+    }
+    if (err.message) {
+        message = err.message;
+    }
+
+    res.status(statusCode).json({
+        data: null,
+        message,
+    });
+});
+
+
