@@ -1,6 +1,6 @@
 const cloudinary = require("../config/cloudinary.js");
 
-const uploader = (file) => {
+exports.uploader = (file) => {
     return new Promise(function (resolve, reject) {
         cloudinary.uploader.upload(
             file.tempFilePath,
@@ -15,4 +15,3 @@ const uploader = (file) => {
     });
 };
 
-module.exports = uploader;

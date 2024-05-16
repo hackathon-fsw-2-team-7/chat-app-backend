@@ -18,40 +18,37 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
 
-  User.init(
-    {
-      id: {
-        type: DataTypes.UUID,
-        primaryKey: true,
-        allowNull: false,
-      },
-      username: {
-        type: DataTypes.STRING,
-        unique: true,
-      },
-      email: {
-        unique: true,
-        type: DataTypes.STRING,
-      },
-      password: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      name: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      photo: {
-        type: DataTypes.TEXT,
-        allowNull: true,
-      },
-    },
-    {
-      sequelize,
-      modelName: "User",
-      tableName: "User",
-      paranoid: true,
-    }
-  );
-  return User;
+    User.init({
+        id: {
+            type: DataTypes.UUID,
+            primaryKey: true,
+            allowNull: false,
+        },
+        username: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true,
+        },
+        email: {
+            unique: true,
+            type: DataTypes.STRING,
+        },
+        password: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        name: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        photo: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+        },
+    }, {
+        sequelize,
+        modelName: 'User',
+        tableName: 'User',
+    });
+    return User;
 };
