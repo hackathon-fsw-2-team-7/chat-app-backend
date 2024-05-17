@@ -1,5 +1,6 @@
 const { User } = require("../../models");
 const { deleteData } = require("../../helpers/redis");
+const { uploader } = require("../../helpers/cloudinary");
 const crypto = require("crypto");
 const path = require("path");
 
