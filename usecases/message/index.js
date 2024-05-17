@@ -20,12 +20,5 @@ const _validateMessage = async (payload) => {
             statusCode: 400,
         });
     }
-    const belongingUser = await userRepo.getUserByUsername(username);
 
-    if (!belongingUser) {
-        throw new HttpError({
-            message: `User with username '${username}' does not exist!`,
-            statusCode: 400,
-        });
-    }
 }

@@ -3,21 +3,25 @@ require("dotenv").config();
 const express = require("express");
 const fileUpload = require("express-fileupload");
 const app = express();
+const port = process.env.PORT;
+const cors = require("cors");
 
-const httpServer = require("http").createServer(app);
+const { createServer } = require("http");
+const { Server } = require("socket.io");
+
+const httpServer = createServer(app);
 const options = {
     cors: {
         origin: "*",
         methods: "*",
-    }
+    },
 };
-const io = require("socket.io")(httpServer, options);
-
-const port = process.env.PORT || 4000;
-const cors = require("cors");
+const io = new Server(httpServer, options);
 
 app.use(cors());
 app.use(express.json()); // enable body in json format
+// Static files
+app.use(express.static("public"));
 app.use(
     fileUpload({
         useTempFiles: true,
@@ -38,10 +42,14 @@ app.use((req, _, next) => {
 
 const errorResponseHandler = require("./middlewares/errorResponseHandler.js");
 
-const baseEndpoint = "/api/v1";
+const baseEndpoint = "/api";
 const messageRoutes = require("./routes/message/index.js");
+const registerUser = require("./routes/register/index.js");
+const authRoutes = require("./routes/auth/auth.js");
 
 app.use(`${baseEndpoint}/messages`, messageRoutes);
+app.use(`${baseEndpoint}/register`, registerUser);
+
 app.use((err, _, res, __) => errorResponseHandler(err, res));
 
 io.on("connection", (socket) => {
