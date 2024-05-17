@@ -2,9 +2,11 @@ require("dotenv").config();
 
 const express = require("express");
 const fileUpload = require("express-fileupload");
-const app = express();
-const port = process.env.PORT;
+const router = require("./routes");
 const cors = require("cors");
+
+const app = express();
+const port = process.env.PORT || 4000;
 
 const { createServer } = require("http");
 const { Server } = require("socket.io");
@@ -44,11 +46,10 @@ const errorResponseHandler = require("./middlewares/errorResponseHandler.js");
 
 const baseEndpoint = "/api";
 const messageRoutes = require("./routes/message/index.js");
-const registerUser = require("./routes/register/index.js");
-const authRoutes = require("./routes/auth/auth.js");
+const authRoutes = require("./routes/auth/index.js");
 
 app.use(`${baseEndpoint}/messages`, messageRoutes);
-app.use(`${baseEndpoint}/register`, registerUser);
+app.use(`${baseEndpoint}/auth`, authRoutes);
 
 app.use((err, _, res, __) => errorResponseHandler(err, res));
 
@@ -69,3 +70,4 @@ io.on("connection", (socket) => {
 httpServer.listen(port, () => {
     console.log(`Server is listening on port ${port}`);
 });
+

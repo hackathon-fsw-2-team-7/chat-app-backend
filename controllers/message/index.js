@@ -12,7 +12,13 @@ exports.getAllMessages = async (req, res, __) => {
 
 exports.addMessage = async (req, res, next) => {
     try {
-        const payload = req?.body;
+        let payload = req?.body;
+
+        if (req.user) {
+            const user = req.user;
+            payload = {...payload, user};
+        }
+
         const data = await messageUsecase.addMessage(payload);
         req.io.emit("message", data);
 
