@@ -41,12 +41,14 @@ const messageRoutes = require("./routes/message/index.js");
 const registerUser = require("./routes/register/index.js");
 const profileUser = require("./routes/profile/index.js");
 const editProfileUser = require("./routes/editProfile/index.js");
+const deleteUser = require("./routes/deleteUser/index.js");
 const authRoutes = require("./routes/auth/auth.js");
 
 app.use(`${baseEndpoint}/messages`, messageRoutes);
 app.use(`${baseEndpoint}/register`, registerUser);
 app.use(`${baseEndpoint}/profile`, profileUser);
 app.use(`${baseEndpoint}/edit-profile`, editProfileUser);
+app.use(`${baseEndpoint}/delete-user`, deleteUser);
 
 app.use((err, _, res, __) => errorResponseHandler(err, res));
 
